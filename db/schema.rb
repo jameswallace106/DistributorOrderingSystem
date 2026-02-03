@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2026_02_02_190103) do
+ActiveRecord::Schema[8.0].define(version: 2026_02_03_134631) do
   create_table "admins", force: :cascade do |t|
     t.string "name"
     t.string "email"
@@ -23,14 +23,14 @@ ActiveRecord::Schema[8.0].define(version: 2026_02_02_190103) do
     t.string "password"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.integer "stock_keeping_unit_id", null: false
-    t.index ["stock_keeping_unit_id"], name: "index_distributors_on_stock_keeping_unit_id"
   end
 
   create_table "items", force: :cascade do |t|
     t.integer "quantity"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.integer "stock_keeping_unit_id"
+    t.index ["stock_keeping_unit_id"], name: "index_items_on_stock_keeping_unit_id"
   end
 
   create_table "orders", force: :cascade do |t|
@@ -46,35 +46,39 @@ ActiveRecord::Schema[8.0].define(version: 2026_02_02_190103) do
     t.string "name"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.integer "stock_keeping_unit_id", null: false
-    t.index ["stock_keeping_unit_id"], name: "index_products_on_stock_keeping_unit_id"
   end
 
   create_table "stock_keeping_units", force: :cascade do |t|
     t.integer "price"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.integer "item_id", null: false
-    t.index ["item_id"], name: "index_stock_keeping_units_on_item_id"
+    t.integer "distributor_id", null: false
+    t.integer "product_id", null: false
+    t.index ["distributor_id"], name: "index_stock_keeping_units_on_distributor_id"
+    t.index ["product_id"], name: "index_stock_keeping_units_on_product_id"
   end
 
   create_table "users", force: :cascade do |t|
-    t.string "username"
-    t.string "password"
+    t.string "username", default: "", null: false
     t.boolean "is_admin"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.integer "distributor_id"
     t.integer "admin_id"
+    t.string "encrypted_password", default: "", null: false
+    t.string "reset_password_token"
+    t.datetime "reset_password_sent_at"
+    t.datetime "remember_created_at"
     t.index ["admin_id"], name: "index_users_on_admin_id"
     t.index ["distributor_id"], name: "index_users_on_distributor_id"
+    t.index ["reset_password_token"], name: "index_users_on_reset_password_token", unique: true
   end
 
-  add_foreign_key "distributors", "stock_keeping_units"
+  add_foreign_key "items", "stock_keeping_units"
   add_foreign_key "orders", "distributors"
   add_foreign_key "orders", "items"
-  add_foreign_key "products", "stock_keeping_units"
-  add_foreign_key "stock_keeping_units", "items"
+  add_foreign_key "stock_keeping_units", "distributors"
+  add_foreign_key "stock_keeping_units", "products"
   add_foreign_key "users", "admins"
   add_foreign_key "users", "distributors"
 end

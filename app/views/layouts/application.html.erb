@@ -22,7 +22,33 @@
     <%= javascript_importmap_tags %>
   </head>
 
+
   <body>
+    <% flash.each do |type, message| %>
+      <% next if message == "You need to sign in or sign up before continuing." %>
+      <%# Map Rails flash types to custom classes %>
+      <% toast_class = type.to_s == "alert" ? "toast-error" : "toast-success" %>
+
+      <div class="toast <%= toast_class %>">
+        <span><%= message %></span>
+        <button class="toast-close" onclick="this.parentElement.remove()">×</button>
+      </div>
+    <% end %>
     <%= yield %>
+    <script>
+      const autoDismissToast = (toast) => {
+        setTimeout(() => {
+          toast.classList.add("fade-out");
+          setTimeout(() => toast.remove(), 300);
+        }, 3000);
+      };
+
+      const handleToasts = () => {
+        document.querySelectorAll(".toast").forEach(autoDismissToast);
+      };
+
+      document.addEventListener("DOMContentLoaded", handleToasts);
+      document.addEventListener("turbo:load", handleToasts);
+    </script>
   </body>
 </html>
