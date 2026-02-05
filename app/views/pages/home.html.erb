@@ -1,5 +1,3 @@
-<!-- Top horizontal bar -->
-<!-- Top horizontal bar -->
 <nav class="navbar">
   <span class="navbar-text">
     Logged in as: <strong><%= @user.username %></strong>
@@ -8,15 +6,12 @@
   <%= button_to "Logout", destroy_user_session_path, method: :delete, class: "btn-logout" %>
 </nav>
 
-<!-- Main content -->
-<div class="home-main d-flex flex-column justify-content-center align-items-center vh-100 bg-light">
-  <!-- Admin only menu items (conditionally) -->
+<div class="home d-flex flex-column justify-content-center align-items-center vh-100 bg-light">
   <% if @user.is_admin? %>
-    <%= link_to "Distributors", distributors_path, class: "home-button btn btn-primary mb-3" %>
-    <%= link_to "Products", products_path, class: "home-button btn btn-primary mb-3" %>
-    <%= link_to "Stock Keeping Units", stock_keeping_units_path, class: "home-button btn btn-primary" %>
+    <%= link_to "Distributors", distributors_path, class: "btn btn-primary mb-3" %>
+    <%= link_to "Products", products_path, class: "btn btn-primary mb-3" %>
+    <%= link_to "Stock Keeping Units", stock_keeping_units_path, class: "btn btn-primary" %>
   <% else %>
-    <!-- Distributor view placeholder -->
     <p>You are logged in as a distributor.</p>
   <% end %>
 </div>

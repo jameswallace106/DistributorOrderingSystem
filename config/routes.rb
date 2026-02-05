@@ -15,7 +15,11 @@ Rails.application.routes.draw do
   # root "posts#index"
   root "pages#home"
 
-  resources :distributors, only: [:index]
+  resources :distributors, only: [:index, :create, :update, :destroy] do
+    member do
+      get :configure
+    end
+  end
   resources :products, only: [:index]
   resources :stock_keeping_units, only: [:index]
 end

@@ -1,2 +1,110 @@
-<h1>Distributors#index</h1>
-<p>Find me in app/views/distributors/index.html.erb</p>
+<!-- app/views/distributors/index.html.erb -->
+
+<nav class="navbar">
+  <span class="navbar-text">
+    Logged in as: <strong><%= current_user.username %></strong>
+  </span>
+
+  <%= button_to "Logout",
+      destroy_user_session_path,
+      method: :delete,
+      class: "btn-logout" %>
+</nav>
+
+<div class="home">
+  <div class="table-card">
+
+    <div class="table-header">
+      <h2>Distributors</h2>
+      <%= button_tag "Add New", type: "button", id: "btn-add-new", class: "btn-add" %>
+    </div>
+
+    <div id="add-new-form" class="hidden" style="margin-bottom: 20px;">
+      <%= form_with model: Distributor.new, url: distributors_path, local: true do |f| %>
+        <div class="field">
+          <%= f.label :username, "Distributor Name" %>
+          <%= f.text_field :username, required: true %>
+        </div>
+
+        <div class="actions">
+          <%= f.submit "Submit", class: "btn-add" %>
+          <%= button_tag "Cancel", type: "button", class: "btn-cancel" %>
+        </div>
+      <% end %>
+    </div>
+
+    <table class="data-table">
+      <thead>
+        <tr>
+          <th>ID</th>
+          <th>Name</th>
+          <th></th>
+        </tr>
+      </thead>
+      <tbody>
+        <% @distributors.each do |distributor| %>
+          <tr>
+            <td><%= distributor.id %></td>
+            <td><%= distributor.username %></td>
+            <td>
+              <%= button_to "Configure",
+                  configure_distributor_path(distributor),
+                  method: :get,
+                  form: { data: { turbo_frame: "modal" } },
+                  class: "btn-delete" %>
+            </td>
+          </tr>
+        <% end %>
+
+        <% if @distributors.empty? %>
+          <tr>
+            <td colspan="3" class="empty-row">No distributors found</td>
+          </tr>
+        <% end %>
+      </tbody>
+    </table>
+
+  </div>
+</div>
+
+<turbo-frame id="modal"></turbo-frame>
+
+<script>
+document.addEventListener("turbo:load", () => {
+  const btnAddNew = document.getElementById("btn-add-new");
+  const form = document.getElementById("add-new-form");
+  const btnCancel = form ? form.querySelector(".btn-cancel") : null;
+
+  if (btnAddNew && form) {
+    btnAddNew.addEventListener("click", () => {
+      form.classList.remove("hidden");
+      btnAddNew.disabled = true;
+    });
+  }
+
+  if (btnCancel && form && btnAddNew) {
+    btnCancel.addEventListener("click", () => {
+      form.classList.add("hidden");
+      btnAddNew.disabled = false;
+      form.querySelector("input").value = "";
+    });
+  }
+
+  const btnSubmit = document.getElementById("btn-submit-distributor");
+  if (btnSubmit && btnAddNew) {
+    form.addEventListener("submit", () => {
+      form.classList.add("hidden");
+      btnAddNew.disabled = false;
+    });
+  }
+
+  document.addEventListener("click", (e) => {
+    if (e.target.classList.contains("modal-close")) {
+      const modal = document.getElementById("modal");
+      if (modal) {
+        modal.innerHTML = "";
+      }
+    }
+  });
+});
+</script>
