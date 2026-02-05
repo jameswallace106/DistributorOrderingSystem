@@ -1,2 +1,105 @@
-<h1>Products#index</h1>
-<p>Find me in app/views/products/index.html.erb</p>
+<!-- app/views/products/index.html.erb -->
+
+<nav class="navbar">
+  <span class="navbar-text">
+    Logged in as: <strong><%= current_user.username %></strong>
+  </span>
+
+  <%= button_to "Logout",
+      destroy_user_session_path,
+      method: :delete,
+      class: "btn-logout" %>
+</nav>
+
+<div class="home">
+  <div class="table-card">
+
+    <div class="table-header">
+      <h2>Products</h2>
+      <%= button_to "Add New",
+          new_product_path,
+          method: :get,
+          form: { data: { turbo_frame: "modal-product-new" } },
+          class: "btn-add" %>
+    </div>
+
+    <table class="data-table">
+      <thead>
+        <tr>
+          <th>ID</th>
+          <th>Name</th>
+          <th></th>
+        </tr>
+      </thead>
+      <tbody>
+        <% @products.each do |product| %>
+          <tr>
+            <td><%= product.id %></td>
+            <td><%= product.name %></td>
+            <td>
+              <%= button_to "Configure",
+                  configure_product_path(product),
+                  method: :get,
+                  form: { data: { turbo_frame: "modal-product" } },
+                  class: "btn-delete" %>
+            </td>
+          </tr>
+        <% end %>
+
+        <% if @products.empty? %>
+          <tr>
+            <td colspan="3" class="empty-row">No products found</td>
+          </tr>
+        <% end %>
+      </tbody>
+    </table>
+
+  </div>
+</div>
+
+<turbo-frame id="modal-product-new"></turbo-frame>
+<turbo-frame id="modal-product"></turbo-frame>
+
+<script>
+document.addEventListener("turbo:load", () => {
+  const btnAddNew = document.getElementById("btn-add-new");
+  const form = document.getElementById("add-new-form");
+  const btnCancel = form ? form.querySelector(".btn-cancel") : null;
+
+  if (btnAddNew && form) {
+    btnAddNew.addEventListener("click", () => {
+      form.classList.remove("hidden");
+      btnAddNew.disabled = true;
+    });
+  }
+
+  if (btnCancel && form && btnAddNew) {
+    btnCancel.addEventListener("click", () => {
+      form.classList.add("hidden");
+      btnAddNew.disabled = false;
+      form.querySelector("input").value = "";
+    });
+  }
+
+  const btnSubmit = document.getElementById("btn-submit-product");
+  if (btnSubmit && btnAddNew) {
+    form.addEventListener("submit", () => {
+      form.classList.add("hidden");
+      btnAddNew.disabled = false;
+    });
+  }
+
+  document.addEventListener("click", (e) => {
+    if (e.target.classList.contains("modal-close")) {
+      const modal = document.getElementById("modal-product");
+      if (modal) {
+        modal.innerHTML = "";
+      }
+      const modalNew = document.getElementById("modal-product-new");
+      if (modalNew){
+        modalNew.innerHTML = "";
+      }
+    }
+  });
+});
+</script>

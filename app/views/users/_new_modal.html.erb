@@ -1,0 +1,60 @@
+<turbo-frame id="modal-user-new">
+  <div class="modal-overlay">
+    <div class="modal">
+      <%= button_tag "&times;".html_safe, type: "button", class: "modal-close" %>
+      <h3>Add New User</h3>
+      <%= form_with model: user,
+            url: users_path,
+            method: :post,
+            data: { turbo_frame: "modal-user-new" } do |f| %>
+        
+        <%= f.label :username, "Username" %>
+        <%= f.text_field :username,
+              placeholder: "Username",
+              class: "modal-input",
+              required: true %>
+        
+        <div style="margin: 10px 0;">
+          <%= f.check_box :is_admin, id: "user_is_admin" %>
+          <%= f.label :is_admin, "Is Admin?" %>
+        </div>
+        
+        <div id="distributor-field">
+          <%= f.label :distributor_id, "Distributor" %>
+          <%= f.collection_select :distributor_id, distributors, :id, :name,
+                { prompt: "Select a distributor" },
+                { class: "modal-input" } %>
+        </div>
+        
+        <div id="admin-field" style="display: none;">
+          <%= f.label :admin_id, "Admin" %>
+          <%= f.collection_select :admin_id, admins, :id, :username,
+                { prompt: "Select an admin"},
+                { class: "modal-input" } %>
+        </div>
+        
+        <%= f.label :password, "Password" %>
+        <%= f.password_field :password,
+              placeholder: "Password",
+              class: "modal-input",
+              required: true %>
+        
+        <%= f.label :password_confirmation, "Confirm Password" %>
+        <%= f.password_field :password_confirmation,
+              placeholder: "Confirm Password",
+              class: "modal-input",
+              required: true %>
+        
+        <div class="modal-actions">
+          <%= f.submit "Save", class: "modal-btn" %>
+        </div>
+      <% end %>
+      <% if flash[:alert] %>
+        <div class="toast toast-error">
+          <span><%= flash[:alert] %></span>
+          <button class="toast-close" onclick="this.parentElement.remove()">×</button>
+        </div>
+      <% end %>
+    </div>
+  </div>
+</turbo-frame>

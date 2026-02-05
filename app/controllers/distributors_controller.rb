@@ -4,6 +4,10 @@ class DistributorsController < ApplicationController
     @distributors = Distributor.all.order(:id)
   end
 
+  def new
+    @distributor = Distributor.new
+    render partial: "new_modal", locals: { distributor: @distributor }
+  end
   def create
     @distributor = Distributor.new(distributor_params)
 
@@ -29,8 +33,6 @@ class DistributorsController < ApplicationController
   def update
     if @distributor.update(distributor_params)
       redirect_to distributors_path, notice: "Distributor updated!"
-    else
-      render partial: "modal", locals: { distributor: @distributor }, status: :unprocessable_entity
     end
   end
 
@@ -40,6 +42,6 @@ class DistributorsController < ApplicationController
     @distributor = Distributor.find(params[:id])
   end
   def distributor_params
-    params.require(:distributor).permit(:username)
+    params.require(:distributor).permit(:name)
   end
 end

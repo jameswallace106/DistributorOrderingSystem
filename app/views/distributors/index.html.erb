@@ -16,21 +16,11 @@
 
     <div class="table-header">
       <h2>Distributors</h2>
-      <%= button_tag "Add New", type: "button", id: "btn-add-new", class: "btn-add" %>
-    </div>
-
-    <div id="add-new-form" class="hidden" style="margin-bottom: 20px;">
-      <%= form_with model: Distributor.new, url: distributors_path, local: true do |f| %>
-        <div class="field">
-          <%= f.label :username, "Distributor Name" %>
-          <%= f.text_field :username, required: true %>
-        </div>
-
-        <div class="actions">
-          <%= f.submit "Submit", class: "btn-add" %>
-          <%= button_tag "Cancel", type: "button", class: "btn-cancel" %>
-        </div>
-      <% end %>
+      <%= button_to "Add New",
+          new_distributor_path,
+          method: :get,
+          form: { data: { turbo_frame: "modal-dist-new" } },
+          class: "btn-add" %>
     </div>
 
     <table class="data-table">
@@ -45,12 +35,12 @@
         <% @distributors.each do |distributor| %>
           <tr>
             <td><%= distributor.id %></td>
-            <td><%= distributor.username %></td>
+            <td><%= distributor.name %></td>
             <td>
               <%= button_to "Configure",
                   configure_distributor_path(distributor),
                   method: :get,
-                  form: { data: { turbo_frame: "modal" } },
+                  form: { data: { turbo_frame: "modal-distributor" } },
                   class: "btn-delete" %>
             </td>
           </tr>
@@ -67,7 +57,8 @@
   </div>
 </div>
 
-<turbo-frame id="modal"></turbo-frame>
+<turbo-frame id="modal-dist-new"></turbo-frame>
+<turbo-frame id="modal-distributor"></turbo-frame>
 
 <script>
 document.addEventListener("turbo:load", () => {
@@ -100,9 +91,13 @@ document.addEventListener("turbo:load", () => {
 
   document.addEventListener("click", (e) => {
     if (e.target.classList.contains("modal-close")) {
-      const modal = document.getElementById("modal");
+      const modal = document.getElementById("modal-distributor");
       if (modal) {
         modal.innerHTML = "";
+      }
+      const modalNew = document.getElementById("modal-dist-new");
+      if (modalNew){
+        modalNew.innerHTML = "";
       }
     }
   });

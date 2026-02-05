@@ -1,0 +1,60 @@
+<turbo-frame id="modal-user">
+  <div class="modal-overlay">
+    <div class="modal">
+      <%= button_tag "&times;".html_safe, type: "button", class: "modal-close" %>
+      <h3>Configure User</h3>
+      <%= form_with model: user,
+            url: user_path(user),
+            method: :patch,
+            id: "edit-user-form",
+            data: { turbo_frame: "_top" } do |f| %>
+        
+        <%= f.label :username, "Username" %>
+        <%= f.text_field :username,
+              placeholder: "Username",
+              class: "modal-input",
+              required: true %>
+        
+        <div style="margin: 10px 0;">
+          <%= f.check_box :is_admin, id: "user_is_admin" %>
+          <%= f.label :is_admin, "Is Admin?" %>
+        </div>
+        
+        <div id="distributor-field" style="<%= user.is_admin ? 'display: none;' : '' %>">
+          <%= f.label :distributor_id, "Distributor" %>
+          <%= f.collection_select :distributor_id, distributors, :id, :name,
+                { prompt: "Select a distributor" },
+                { class: "modal-input" } %>
+        </div>
+        
+        <div id="admin-field" style="<%= user.is_admin ? '' : 'display: none;' %>">
+          <%= f.label :admin_id, "Admin" %>
+          <%= f.collection_select :admin_id, admins, :id, :username,
+                { prompt: "Select an admin", include_blank: "None (Super Admin)" },
+                { class: "modal-input" } %>
+        </div>
+        
+        <h4 style="margin-top: 20px; margin-bottom: 10px; color: #6A13B5;">Change Password (Optional)</h4>
+        
+        <%= f.label :password, "New Password" %>
+        <%= f.password_field :password,
+              placeholder: "Leave blank to keep current",
+              class: "modal-input" %>
+        
+        <%= f.label :password_confirmation, "Confirm New Password" %>
+        <%= f.password_field :password_confirmation,
+              placeholder: "Leave blank to keep current",
+              class: "modal-input" %>
+        
+      <% end %>
+      <div class="modal-actions">
+        <%= button_tag "Save", type: "button", class: "modal-btn", onclick: "document.getElementById('edit-user-form').requestSubmit()" %>
+        <%= button_to "Delete",
+              user_path(user),
+              method: :delete,
+              form: { data: { turbo_confirm: "Are you sure?", turbo_frame: "_top" } },
+              class: "modal-btn" %>
+      </div>
+    </div>
+  </div>
+</turbo-frame>

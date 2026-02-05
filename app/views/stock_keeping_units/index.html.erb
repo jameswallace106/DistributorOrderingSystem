@@ -1,2 +1,101 @@
-<h1>StockKeepingUnits#index</h1>
-<p>Find me in app/views/stock_keeping_units/index.html.erb</p>
+<!-- app/views/stock_keeping_units/index.html.erb -->
+
+<nav class="navbar">
+  <span class="navbar-text">
+    Logged in as: <strong><%= current_user.username %></strong>
+  </span>
+  <%= button_to "Logout",
+      destroy_user_session_path,
+      method: :delete,
+      class: "btn-logout" %>
+</nav>
+
+<div class="home">
+  <div class="table-card">
+    <div class="table-header">
+      <h2>Stock Keeping Units</h2>
+      <%= button_to "Add New",
+          new_stock_keeping_unit_path,
+          method: :get,
+          form: { data: { turbo_frame: "modal-sku-new" } },
+          class: "btn-add" %>
+    </div>
+
+    <table class="data-table">
+      <thead>
+        <tr>
+          <th>ID</th>
+          <th>Product</th>
+          <th>Distributor</th>
+          <th>Price (Distributor's currency)</th>
+          <th></th>
+        </tr>
+      </thead>
+      <tbody>
+        <% @skus.each do |sku| %>
+          <tr>
+            <td><%= sku.id %></td>
+            <td><%= sku.product.name %></td>
+            <td><%= sku.distributor.name %></td>
+            <td><%= number_with_precision(sku.price, precision: 2) %></td>
+            <td>
+              <%= button_to "Configure",
+                  configure_stock_keeping_unit_path(sku),
+                  method: :get,
+                  form: { data: { turbo_frame: "modal-sku" } },
+                  class: "btn-delete" %>
+            </td>
+          </tr>
+        <% end %>
+        <% if @skus.empty? %>
+          <tr>
+            <td colspan="5" class="empty-row">No SKUs found</td>
+          </tr>
+        <% end %>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+
+<turbo-frame id="modal-sku-new"></turbo-frame>
+<turbo-frame id="modal-sku"></turbo-frame>
+
+<script>
+document.addEventListener("turbo:load", () => {
+  const btnAddNew = document.getElementById("btn-add-new");
+  const form = document.getElementById("add-new-form");
+  const btnCancel = form ? form.querySelector(".btn-cancel") : null;
+
+  if (btnAddNew && form) {
+    btnAddNew.addEventListener("click", () => {
+      form.classList.remove("hidden");
+      btnAddNew.disabled = true;
+    });
+  }
+
+  if (btnCancel && form && btnAddNew) {
+    btnCancel.addEventListener("click", () => {
+      form.classList.add("hidden");
+      btnAddNew.disabled = false;
+      form.querySelectorAll("input, select").forEach(input => input.value = "");
+    });
+  }
+
+  if (form && btnAddNew) {
+    form.addEventListener("submit", () => {
+      form.classList.add("hidden");
+      btnAddNew.disabled = false;
+    });
+  }
+
+  document.addEventListener("click", (e) => {
+    if (e.target.classList.contains("modal-close")) {
+      const modal = document.getElementById("modal-sku");
+      if (modal) {
+        modal.innerHTML = "";
+      }
+    }
+  });
+});
+</script>

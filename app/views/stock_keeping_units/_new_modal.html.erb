@@ -1,0 +1,32 @@
+<turbo-frame id="modal-sku-new">
+  <div class="modal-overlay">
+    <div class="modal">
+      <%= button_tag "&times;".html_safe, type: "button", class: "modal-close" %>
+      <h3>Add New SKU</h3>
+      <%= form_with model: sku,
+            url: stock_keeping_units_path,
+            method: :post,
+            data: { turbo_frame: "_top" } do |f| %>
+        <%= f.label :product_id, "Product" %>
+        <%= f.collection_select :product_id, products, :id, :name, 
+              { prompt: "Select a product" }, 
+              { class: "modal-input", required: true } %>
+        
+        <%= f.label :distributor_id, "Distributor" %>
+        <%= f.collection_select :distributor_id, distributors, :id, :name, 
+              { prompt: "Select a distributor" }, 
+              { class: "modal-input", required: true } %>
+        
+        <%= f.label :price, "Price" %>
+        <%= f.number_field :price,
+              step: 0.01,
+              placeholder: "Price per unit (Distributor Currency)",
+              class: "modal-input",
+              required: true %>
+        <div class="modal-actions">
+          <%= f.submit "Save", class: "modal-btn" %>
+        </div>
+      <% end %>
+    </div>
+  </div>
+</turbo-frame>

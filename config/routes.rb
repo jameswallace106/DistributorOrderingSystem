@@ -1,4 +1,7 @@
 Rails.application.routes.draw do
+  get "orders/index"
+  get "admins/index"
+  get "users/index"
   devise_for :users
   get "pages/home"
   # Define your application routes per the DSL in https://guides.rubyonrails.org/routing.html
@@ -15,11 +18,25 @@ Rails.application.routes.draw do
   # root "posts#index"
   root "pages#home"
 
-  resources :distributors, only: [:index, :create, :update, :destroy] do
+  resources :distributors, only: [:index, :new, :create, :update, :destroy] do
     member do
       get :configure
     end
   end
-  resources :products, only: [:index]
-  resources :stock_keeping_units, only: [:index]
+  resources :products, only: [:index, :new, :create, :update, :destroy] do 
+    member do
+      get :configure
+    end
+  end
+  resources :stock_keeping_units, only: [:index, :new, :create, :update, :destroy] do
+    member do
+      get :configure
+    end
+  end
+  resources :users, only: [:index, :new, :create, :update, :destroy] do
+    member do
+      get :configure
+    end
+  end
+  resources :orders, only: [:index]
 end

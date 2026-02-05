@@ -1,21 +1,21 @@
-<turbo-frame id="modal-distributor">
+<turbo-frame id="modal-product">
   <div class="modal-overlay">
     <div class="modal">
       <%= button_tag "&times;".html_safe, type: "button", class: "modal-close" %>
-      <h3>Configure Distributor</h3>
-      <%= form_with model: distributor,
-            url: distributor_path(distributor),
+      <h3>Configure Product</h3>
+      <%= form_with model: product,
+            url: product_path(product),
             method: :patch,
-            id: "edit-distributor-form",
+            id: "edit-product-form",
             data: { turbo_frame: "_top" } do |f| %>
         <%= f.text_field :name,
-              placeholder: "Distributor Name",
+              placeholder: "Product Name",
               class: "modal-input" %>
       <% end %>
       <div class="modal-actions">
-        <%= button_tag "Save", type: "button", class: "modal-btn", onclick: "document.getElementById('edit-distributor-form').requestSubmit()" %>
+        <%= button_tag "Save", type: "button", class: "modal-btn", onclick: "document.getElementById('edit-product-form').requestSubmit()" %>
         <%= button_to "Delete",
-              distributor_path(distributor),
+              product_path(product),
               method: :delete,
               form: { data: { turbo_confirm: "Are you sure?", turbo_frame: "_top" } },
               class: "modal-btn" %>

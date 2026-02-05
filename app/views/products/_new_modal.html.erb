@@ -1,0 +1,21 @@
+<turbo-frame id="modal-product-new">
+  <div class="modal-overlay">
+    <div class="modal">
+      <%= button_tag "&times;".html_safe, type: "button", class: "modal-close" %>
+      <h3>Add New Product</h3>
+      <%= form_with model: product,
+            url: products_path,
+            method: :post,
+            data: { turbo_frame: "_top" } do |f| %>
+        <%= f.label :name, "Product Name" %>
+        <%= f.text_field :name,
+              placeholder: "Product Name",
+              class: "modal-input",
+              required: true %>
+        <div class="modal-actions">
+          <%= f.submit "Save", class: "modal-btn" %>
+        </div>
+      <% end %>
+    </div>
+  </div>
+</turbo-frame>

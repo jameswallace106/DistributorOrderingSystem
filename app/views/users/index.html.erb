@@ -1,0 +1,91 @@
+<nav class="navbar">
+  <span class="navbar-text">
+    Logged in as: <strong><%= current_user.username %></strong>
+  </span>
+  <%= button_to "Logout",
+      destroy_user_session_path,
+      method: :delete,
+      class: "btn-logout" %>
+</nav>
+<div class="home">
+  <div class="table-card">
+    <div class="table-header">
+      <h2>Users</h2>
+      <%= button_to "Add New",
+          new_user_path,
+          method: :get,
+          form: { data: { turbo_frame: "modal-user-new" } },
+          class: "btn-add" %>
+    </div>
+    <table class="data-table">
+      <thead>
+        <tr>
+          <th>ID</th>
+          <th>Username</th>
+          <th>Role</th>
+          <th>Assigned To</th>
+          <th></th>
+        </tr>
+      </thead>
+      <tbody>
+        <% @users.each do |user| %>
+          <tr>
+            <td><%= user.id %></td>
+            <td><%= user.username %></td>
+            <td><%= user.is_admin ? "Admin" : "User" %></td>
+            <td><%= user.role_name %></td>
+            <td>
+              <%= button_to "Configure",
+                  configure_user_path(user),
+                  method: :get,
+                  form: { data: { turbo_frame: "modal-user" } },
+                  class: "btn-delete" %>
+            </td>
+          </tr>
+        <% end %>
+        <% if @users.empty? %>
+          <tr>
+            <td colspan="5" class="empty-row">No users found</td>
+          </tr>
+        <% end %>
+      </tbody>
+    </table>
+  </div>
+</div>
+<turbo-frame id="modal-user-new"></turbo-frame>
+<turbo-frame id="modal-user"></turbo-frame>
+<script>
+document.addEventListener("turbo:load", () => {
+  document.addEventListener("click", (e) => {
+    if (e.target.classList.contains("modal-close")) {
+      const modal = document.getElementById("modal-user");
+      if (modal) {
+        modal.innerHTML = "";
+      }
+      const modalNew = document.getElementById("modal-user-new");
+      if (modalNew) {
+        modalNew.innerHTML = "";
+      }
+    }
+  });
+  
+  // Toggle role-specific fields
+  document.addEventListener("change", (e) => {
+    if (e.target.id === "user_is_admin") {
+      const isAdmin = e.target.checked;
+      const distributorField = document.getElementById("distributor-field");
+      const adminField = document.getElementById("admin-field");
+      
+      if (distributorField && adminField) {
+        if (isAdmin) {
+          distributorField.style.display = "none";
+          adminField.style.display = "block";
+        } else {
+          distributorField.style.display = "block";
+          adminField.style.display = "none";
+        }
+      }
+    }
+  });
+});
+</script>

@@ -1,0 +1,43 @@
+<nav class="navbar">
+  <span class="navbar-text">
+    Logged in as: <strong><%= current_user.username %></strong>
+  </span>
+  <%= button_to "Logout",
+      destroy_user_session_path,
+      method: :delete,
+      class: "btn-logout" %>
+</nav>
+<div class="home">
+  <div class="table-card">
+    <div class="table-header">
+      <h2>Orders</h2>
+    </div>
+    <table class="data-table">
+      <thead>
+        <tr>
+          <th>ID</th>
+          <th>User</th>
+          <th>Distributor</th>
+          <th>Status</th>
+          <th>Created At</th>
+        </tr>
+      </thead>
+      <tbody>
+        <% @orders.each do |order| %>
+          <tr>
+            <td><%= order.id %></td>
+            <td><%= order.user.username %></td>
+            <td><%= order.distributor.name %></td>
+            <td><%= order.status %></td>
+            <td><%= order.created_at.strftime("%m/%d/%Y %I:%M %p") %></td>
+          </tr>
+        <% end %>
+        <% if @orders.empty? %>
+          <tr>
+            <td colspan="5" class="empty-row">No orders found</td>
+          </tr>
+        <% end %>
+      </tbody>
+    </table>
+  </div>
+</div>
