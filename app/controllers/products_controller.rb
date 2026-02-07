@@ -1,5 +1,6 @@
 class ProductsController < ApplicationController
-  before_action :set_product, only: [:destroy, :configure, :update]
+  before_action :set_product, only: [:configure, :update]
+  before_action :require_admin!
   def index
     @products = Product.all.order(:id)
     @product  = Product.new
@@ -20,11 +21,6 @@ class ProductsController < ApplicationController
   end
 
 
-  def destroy
-    @product.destroy
-    redirect_to products_path, notice: "Product deleted!"
-  end
-
   def configure
     render partial: "modal", locals: { product: @product }
   end
@@ -43,5 +39,9 @@ class ProductsController < ApplicationController
   end
   def product_params
     params.require(:product).permit(:name)
+  end
+
+  def require_admin!
+    redirect_to root_path, alert: "Access denied" unless current_user.is_admin?
   end
 end

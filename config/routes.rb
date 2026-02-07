@@ -25,12 +25,12 @@ Rails.application.routes.draw do
       get :configure
     end
   end
-  resources :products, only: [:index, :new, :create, :update, :destroy] do 
+  resources :products, only: [:index, :new, :create, :update,] do 
     member do
       get :configure
     end
   end
-  resources :stock_keeping_units, only: [:index, :new, :create, :update, :destroy] do
+  resources :stock_keeping_units, only: [:index, :new, :create, :update] do
     member do
       get :configure
     end

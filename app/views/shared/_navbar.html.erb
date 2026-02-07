@@ -1,0 +1,12 @@
+<nav class="navbar">
+  <%= link_to "Home", root_path, class: "btn-home" %>
+  
+  <span class="navbar-text">
+    Logged in as: <strong><%= current_user.username %></strong>
+  </span>
+  
+  <%= button_to "Logout",
+      destroy_user_session_path,
+      method: :delete,
+      class: "btn-logout" %>
+</nav>

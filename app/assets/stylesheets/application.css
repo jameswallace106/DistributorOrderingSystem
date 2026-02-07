@@ -163,6 +163,7 @@ body {
   margin-left: auto;
 }
 
+.navbar .btn-home,
 .navbar .btn-logout {
   padding: 10px 20px;
   background-color: #870E82; 
@@ -174,6 +175,7 @@ body {
   text-decoration: none;
 }
 
+.navbar .btn-home:hover,
 .navbar .btn-logout:hover {
   transform: translateY(-3px);
   background-color: #4F0E87;
@@ -417,6 +419,8 @@ body {
   cursor: pointer;
 }
 
+
+
 #add-new-form select,
 .modal select {
   border: 1px solid #ccc;
@@ -449,7 +453,17 @@ body {
   font-size: 16px;
 }
 
-/* Add to your existing CSS file */
+.modal-btn-submit {
+  background: #dc3545;
+}
+
+.modal-btn-submit:hover {
+  background: #c82333;
+}
+
+.modal-btn-submit:disabled {
+  background-color: gray;
+}
 
 .modal-large {
   width: 90%;
@@ -548,14 +562,19 @@ body {
   border-top: 2px solid #333;
 }
 
-.modal-btn-submit {
-  background: #dc3545;
+
+#item-modal-inline .form-group {
+  margin-bottom: 15px;
 }
 
-.modal-btn-submit:hover {
-  background: #c82333;
+#item-modal-inline h3 {
+  margin-top: 10px;
+  margin-bottom: 15px;
 }
 
+#item-modal-inline .modal-actions {
+  margin-top: 25px;
+}
 .price-display {
   padding: 10px;
   background: #f5f5f5;

@@ -30,15 +30,13 @@ end
   end
 
   def update
-    # Build params hash conditionally
     update_params = user_update_params
-    # If password fields are blank, remove them so Devise doesn't try to update
+
     if update_params[:password].blank?
       update_params.delete(:password)
       update_params.delete(:password_confirmation)
     end
 
-    # Save user
     success =
       if update_params[:password].present?
         @user.update(update_params)

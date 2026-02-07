@@ -1,24 +1,16 @@
-<!-- app/views/stock_keeping_units/index.html.erb -->
-
-<nav class="navbar">
-  <span class="navbar-text">
-    Logged in as: <strong><%= current_user.username %></strong>
-  </span>
-  <%= button_to "Logout",
-      destroy_user_session_path,
-      method: :delete,
-      class: "btn-logout" %>
-</nav>
+<%= render 'shared/navbar' %>
 
 <div class="home">
   <div class="table-card">
     <div class="table-header">
       <h2>Stock Keeping Units</h2>
-      <%= button_to "Add New",
-          new_stock_keeping_unit_path,
-          method: :get,
-          form: { data: { turbo_frame: "modal-sku-new" } },
-          class: "btn-add" %>
+      <% if current_user.is_admin? %>
+        <%= button_to "Add New",
+            new_stock_keeping_unit_path,
+            method: :get,
+            form: { data: { turbo_frame: "modal-sku-new" } },
+            class: "btn-add" %>
+      <% end %>
     </div>
 
     <table class="data-table">
@@ -28,7 +20,9 @@
           <th>Product</th>
           <th>Distributor</th>
           <th>Price (Distributor's currency)</th>
-          <th></th>
+          <% if current_user.is_admin? %>
+            <th></th>
+          <% end %>
         </tr>
       </thead>
       <tbody>
@@ -38,13 +32,15 @@
             <td><%= sku.product.name %></td>
             <td><%= sku.distributor.name %></td>
             <td><%= number_with_precision(sku.price, precision: 2) %></td>
-            <td>
-              <%= button_to "Configure",
-                  configure_stock_keeping_unit_path(sku),
-                  method: :get,
-                  form: { data: { turbo_frame: "modal-sku" } },
-                  class: "btn-delete" %>
-            </td>
+            <% if current_user.is_admin? %>
+              <td>
+                <%= button_to "Configure",
+                    configure_stock_keeping_unit_path(sku),
+                    method: :get,
+                    form: { data: { turbo_frame: "modal-sku" } },
+                    class: "btn-delete" %>
+              </td>
+            <% end %>
           </tr>
         <% end %>
         <% if @skus.empty? %>
@@ -58,8 +54,10 @@
 </div>
 
 
-<turbo-frame id="modal-sku-new"></turbo-frame>
-<turbo-frame id="modal-sku"></turbo-frame>
+<% if current_user.is_admin? %>
+  <turbo-frame id="modal-sku-new"></turbo-frame>
+  <turbo-frame id="modal-sku"></turbo-frame>
+<% end %>
 
 <script>
 document.addEventListener("turbo:load", () => {

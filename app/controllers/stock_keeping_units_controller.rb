@@ -1,8 +1,13 @@
 class StockKeepingUnitsController < ApplicationController
-  before_action :set_sku, only: [:destroy, :configure, :update]
+  before_action :set_sku, only: [ :configure, :update]
 
   def index
-    @skus = StockKeepingUnit.includes(:distributor, :product).order(:id)
+    @skus = if current_user.is_admin?
+      StockKeepingUnit.includes(:product, :distributor).all
+    else
+      StockKeepingUnit.includes(:product, :distributor)
+                      .where(distributor_id: current_user.distributor_id)
+    end
     @distributors = Distributor.all.order(:name)
     @products = Product.all.order(:name)
   end
@@ -23,10 +28,6 @@ class StockKeepingUnitsController < ApplicationController
     end
   end
 
-  def destroy
-    @sku.destroy
-    redirect_to stock_keeping_units_path, notice: "SKU deleted!"
-  end
 
   def configure
     @distributors = Distributor.all.order(:name)

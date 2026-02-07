@@ -1,5 +1,6 @@
 class DistributorsController < ApplicationController
   before_action :set_distributor, only: [:destroy, :configure, :update]
+  before_action :require_admin!
   def index
     @distributors = Distributor.all.order(:id)
   end
@@ -43,5 +44,8 @@ class DistributorsController < ApplicationController
   end
   def distributor_params
     params.require(:distributor).permit(:name)
+  end
+  def require_admin!
+    redirect_to root_path, alert: "Access denied" unless current_user.is_admin?
   end
 end
