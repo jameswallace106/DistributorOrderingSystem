@@ -1,7 +1,6 @@
 class UsersController < ApplicationController
   before_action :set_user, only: [:configure, :update, :destroy]
   before_action :load_associations, only: [:new, :configure]
-  before_action :authenticate_user!
   before_action :require_admin!
   def index
     @users = User.includes(:distributor, :admin).order(:id)
@@ -37,17 +36,6 @@ end
     if update_params[:password].blank?
       update_params.delete(:password)
       update_params.delete(:password_confirmation)
-    end
-    
-    # Convert to boolean
-    is_admin = ActiveModel::Type::Boolean.new.cast(update_params[:is_admin])
-
-    if is_admin
-      update_params[:distributor_id] = nil     # user is now admin → no distributor
-      update_params.delete(:admin_id)          # ignore the form's admin_id
-    else
-      update_params[:admin_id] = nil           # user is now distributor → no admin
-      update_params.delete(:distributor_id)    # ignore the form's distributor_id
     end
 
     # Save user
@@ -85,7 +73,7 @@ end
 
   def load_associations
     @distributors = Distributor.order(:name)
-    @admins = User.where(is_admin: true).where.not(id: @user&.id).order(:username)
+    @admins = Admin.order(:name)
   end
 
   def user_create_params

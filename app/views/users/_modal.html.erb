@@ -29,8 +29,8 @@
         
         <div id="admin-field" style="<%= user.is_admin ? '' : 'display: none;' %>">
           <%= f.label :admin_id, "Admin" %>
-          <%= f.collection_select :admin_id, admins, :id, :username,
-                { prompt: "Select an admin", include_blank: "None (Super Admin)" },
+          <%= f.collection_select :admin_id, admins, :id, :name,
+                { prompt: "Select an admin" },
                 { class: "modal-input" } %>
         </div>
         

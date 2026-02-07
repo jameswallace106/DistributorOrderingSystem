@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2026_02_05_133019) do
+ActiveRecord::Schema[8.0].define(version: 2026_02_06_141650) do
   create_table "admins", force: :cascade do |t|
     t.string "name"
     t.string "email"
@@ -29,6 +29,8 @@ ActiveRecord::Schema[8.0].define(version: 2026_02_05_133019) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.integer "stock_keeping_unit_id"
+    t.integer "order_id", null: false
+    t.index ["order_id"], name: "index_items_on_order_id"
     t.index ["stock_keeping_unit_id"], name: "index_items_on_stock_keeping_unit_id"
   end
 
@@ -36,9 +38,9 @@ ActiveRecord::Schema[8.0].define(version: 2026_02_05_133019) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.integer "distributor_id", null: false
-    t.integer "item_id", null: false
+    t.date "required_delivery_date"
+    t.string "status"
     t.index ["distributor_id"], name: "index_orders_on_distributor_id"
-    t.index ["item_id"], name: "index_orders_on_item_id"
   end
 
   create_table "products", force: :cascade do |t|
@@ -73,9 +75,9 @@ ActiveRecord::Schema[8.0].define(version: 2026_02_05_133019) do
     t.index ["reset_password_token"], name: "index_users_on_reset_password_token", unique: true
   end
 
+  add_foreign_key "items", "orders"
   add_foreign_key "items", "stock_keeping_units"
   add_foreign_key "orders", "distributors"
-  add_foreign_key "orders", "items"
   add_foreign_key "stock_keeping_units", "distributors"
   add_foreign_key "stock_keeping_units", "products"
   add_foreign_key "users", "admins"

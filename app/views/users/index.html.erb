@@ -1,3 +1,4 @@
+<!-- app/views/distributors/index.html.erb -->
 <nav class="navbar">
   <span class="navbar-text">
     Logged in as: <strong><%= current_user.username %></strong>
@@ -32,7 +33,7 @@
           <tr>
             <td><%= user.id %></td>
             <td><%= user.username %></td>
-            <td><%= user.is_admin ? "Admin" : "User" %></td>
+            <td><%= user.is_admin ? "Admin" : "Distributor" %></td>
             <td><%= user.role_name %></td>
             <td>
               <%= button_to "Configure",

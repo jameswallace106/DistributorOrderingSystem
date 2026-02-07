@@ -1,4 +1,6 @@
 Rails.application.routes.draw do
+  get "items/new"
+  get "items/create"
   get "orders/index"
   get "admins/index"
   get "users/index"
@@ -18,7 +20,7 @@ Rails.application.routes.draw do
   # root "posts#index"
   root "pages#home"
 
-  resources :distributors, only: [:index, :new, :create, :update, :destroy] do
+  resources :distributors, only: [:index, :new, :create, :update] do
     member do
       get :configure
     end
@@ -38,5 +40,13 @@ Rails.application.routes.draw do
       get :configure
     end
   end
-  resources :orders, only: [:index]
+  resources :orders, only: [:index, :new, :create, :update, :destroy] do
+    member do
+      get :configure
+    end
+    resources :items, only: [:new, :create, :destroy]
+  end
+
+  resources :items, only: [:destroy]
+
 end

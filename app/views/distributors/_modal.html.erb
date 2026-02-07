@@ -14,11 +14,6 @@
       <% end %>
       <div class="modal-actions">
         <%= button_tag "Save", type: "button", class: "modal-btn", onclick: "document.getElementById('edit-distributor-form').requestSubmit()" %>
-        <%= button_to "Delete",
-              distributor_path(distributor),
-              method: :delete,
-              form: { data: { turbo_confirm: "Are you sure?", turbo_frame: "_top" } },
-              class: "modal-btn" %>
       </div>
     </div>
   </div>

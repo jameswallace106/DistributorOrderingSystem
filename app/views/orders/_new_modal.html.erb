@@ -1,0 +1,229 @@
+<!-- app/views/orders/_new_modal.html.erb -->
+<turbo-frame id="modal-order" data-order-id="<%= order.id %>">
+  <div class="modal-overlay">
+    <div class="modal modal-large">
+      <!--<%= button_tag "&times;".html_safe, type: "button", class: "modal-close" %>-->
+      <h3>Configure Order</h3>
+      <%= form_with model: order,
+            url: order_path(order),
+            method: :patch,
+            id: "order-form",
+            data: { turbo_frame: "_top" } do |f| %>
+        
+        <%= f.hidden_field :status, value: "in-progress", id: "order-status-field" %>
+        
+        <div class="form-group delivery-date-group">
+          <%= f.label :required_delivery_date, "Required Delivery Date" %>
+          <%= f.date_field :required_delivery_date,
+                class: "modal-input date-input",
+                required: false,
+                min: Date.today %>
+        </div>
+                
+        <div class="items-section">
+          <div class="items-header">
+            <h4>Order Items</h4>
+            <button type="button" class="btn-add-item" onclick="showAddItemModal()">
+              Add Item
+            </button>
+          </div>
+          
+          <table class="items-table">
+            <thead>
+              <tr>
+                <th>Product</th>
+                <th>Price per Unit</th>
+                <th># of Pallets (4800 units)</th>
+                <th>Total</th>
+                <th></th>
+              </tr>
+            </thead>
+            <tbody id="order-items-list">
+              <%= f.fields_for :items do |item_fields| %>
+                <% item = item_fields.object %>
+                <tr id="item-<%= item.id %>" class="item-row" data-item-id="<%= item.id %>" data-turbo-action="remove">
+                  <td><%= item.stock_keeping_unit&.product&.name %></td>
+                  <td data-price="<%= item.stock_keeping_unit&.price || 0 %>"><%= sprintf("%.2f", item.stock_keeping_unit&.price || 0) %></td>
+                  <td>
+                    <%= item_fields.hidden_field :id %>
+                    <%= item_fields.hidden_field :stock_keeping_unit_id %>
+                    <%= item_fields.number_field :quantity,
+                          min: 1,
+                          class: "quantity-input",
+                          onchange: "updateItemTotal(this)" %>
+                  </td>
+                  <td><span class="item-total"><%= sprintf("%.2f", item.total_cost) %></span></td>
+                  <td>
+                    <% if item.persisted? %>
+                      </form> <!-- Close parent form temporarily -->
+                      <turbo-frame id="delete-item-<%= item.id %>">
+                        <%= button_to "Remove",
+                              item_path(item),
+                              method: :delete,
+                              form: { data: { turbo_frame: "modal-order" } },
+                              class: "modal-btn" %>
+                      </turbo-frame>
+                      <form> <!-- Reopen parent form -->
+                    <% end %>
+                  </td>
+                </tr>
+              <% end %>
+              <% if order.items.empty? %>
+                <tr class="empty-row">
+                  <td colspan="6">No items added yet</td>
+                </tr>
+              <% end %>
+            </tbody>
+            <tfoot>
+              <tr class="total-row">
+                <td colspan="4"><strong>Total Cost:</strong></td>
+                <td colspan="2">
+                  <strong><span id="order-total"><%= sprintf("%.2f", order.total_cost) %></span></strong>
+                </td>
+              </tr>
+            </tfoot>
+          </table>
+        </div>
+        
+      <% end %>  <!-- This closes the form_with -->
+      
+      <div class="modal-actions">
+        <%= button_to "Delete Order",
+              order_path(order),
+              method: :delete,
+              form: { data: { turbo_confirm: "Are you sure?", turbo_frame: "_top" } },
+              class: "modal-btn modal-btn-delete" %>
+        
+        <%= button_tag "Save for Later",
+              type: "submit",
+              form: "order-form",
+              name: "order[status]",
+              value: "in-progress",
+              class: "modal-btn" %>
+        <%= button_tag "Submit Order",
+              type: "submit",
+              form: "order-form",
+              name: "order[status]",
+              value: "submitted",
+              class: "modal-btn modal-btn-submit" %>
+      </div>
+    </div>
+  </div>
+  
+  <!-- Inline item modal for new orders -->
+  <div id="item-modal-inline" class="modal-overlay modal-overlay-nested" style="display: none;">
+    <div class="modal modal-small">
+
+        <%= button_to "&times;".html_safe,
+          configure_order_path(order),
+          method: :get,
+          form: { data: { turbo_frame: "modal-order" } },
+          class: "modal-btn" %>
+        <h3>Add Item</h3>
+        
+        <%= form_with url: order_items_path(order),
+            method: :post,
+            data: { turbo_frame: "modal-order" } do |f| %>
+        
+        <div class="form-group">
+            <%= f.label :stock_keeping_unit_id, "Select SKU" %>
+            <%= f.select :stock_keeping_unit_id,
+                skus.where(distributor_id: current_user.distributor.id).map { |sku| 
+                [sku.product&.name || 'Unnamed Product', sku.id, { 'data-price': sku.price }] 
+                },
+                { class: "modal-input", onchange: "updateItemPriceFromSelect(this)" } %>
+        </div>
+        
+        <div class="form-group">
+            <label>Price</label>
+            <div class="price-display"><span id="item-price">0.00</span></div>
+        </div>
+        
+        <div class="form-group">
+            <%= f.label :quantity %>
+            <%= f.number_field :quantity, min: 1, value: 1, class: "modal-input", onchange: "updateItemTotalPrice()" %>
+        </div>
+        
+        <div class="form-group">
+            <label>Total</label>
+            <div class="price-display"><span id="item-total-price">0.00</span></div>
+        </div>
+        
+        <div class="modal-actions">
+            <%= f.submit "Add", class: "modal-btn" %>
+        </div>
+        <% end %>
+    </div>
+  </div>
+  <script>
+    document.addEventListener("turbo:submit-end", (event) => {
+      const form = event.target;
+
+      // Only act on the add-item form
+      if (form.action.includes("/items") && event.detail.success) {
+        hideAddItemModal();
+      }
+    });
+    function closeModal(frameId) {
+        const frame = document.getElementById(frameId);
+        if (frame) {
+        frame.innerHTML = '';
+        }
+    }
+
+    function showAddItemModal() {
+        document.getElementById('item-modal-inline').style.display = 'flex';
+        updateItemPriceFromSelect(document.querySelector('#item-modal-inline select'));
+    }
+    
+    function hideAddItemModal() {
+        document.getElementById('item-modal-inline').style.display = '';
+    }
+    
+    function updateItemPriceFromSelect(select) {
+        const skuId = select.value;
+        if (!skuId) {
+        document.getElementById('item-price').textContent = '0.00';
+        updateItemTotalPrice();
+        return;
+        }
+        
+        // Get price from the SKU (you'll need to add data-price to options or make a small lookup)
+        const option = select.options[select.selectedIndex];
+        const price = parseFloat(option.dataset.price || 0);
+        document.getElementById('item-price').textContent = price.toFixed(2);
+        updateItemTotalPrice();
+    }
+    
+    function updateItemTotalPrice() {
+        const price = parseFloat(document.getElementById('item-price').textContent);
+        const quantity = parseInt(document.querySelector('#item-modal-inline input[name="quantity"]').value) || 0;
+        const total = price * quantity;
+        document.getElementById('item-total-price').textContent = total.toFixed(2);
+    }
+
+    function updateOrderTotal() {
+        let total = 0;
+        document.querySelectorAll('.item-total').forEach(el => {
+        total += parseFloat(el.textContent || 0);
+        });
+        document.getElementById('order-total').textContent = total.toFixed(2);
+    }
+    
+    function updateItemTotal(input) {
+        const row = input.closest('tr');
+        const priceCell = row.querySelector('td[data-price]');
+        const price = parseFloat(priceCell.dataset.price) || 0;
+        const quantity = parseInt(input.value) || 0;
+        const total = price * quantity * 4800;
+        row.querySelector('.item-total').textContent = total.toFixed(2);
+        updateOrderTotal();
+    }
+    
+    function removeItem(button) {
+        const row = button.closest('tr');
+        row.remove();
+        updateOrderTotal();
+    }
+    </script>
+</turbo-frame>
