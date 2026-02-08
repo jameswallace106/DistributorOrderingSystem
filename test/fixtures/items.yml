@@ -1,7 +1,21 @@
 # Read about fixtures at https://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
 
-one:
-  quantity: 1
+item_one:
+  quantity: 10
+  stock_keeping_unit: sku_four
+  order: submitted_order
 
-two:
-  quantity: 1
+item_two:
+  quantity: 5
+  stock_keeping_unit: sku_five
+  order: submitted_order
+
+item_three:
+  quantity: 3
+  stock_keeping_unit: sku_one
+  order: submitted_order
+
+item_four:
+  quantity: 7
+  stock_keeping_unit: sku_one
+  order: in_progress_order

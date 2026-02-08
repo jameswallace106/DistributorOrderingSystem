@@ -1,8 +1,6 @@
-<!-- app/views/orders/_new_modal.html.erb -->
 <turbo-frame id="modal-order" data-order-id="<%= order.id %>">
   <div class="modal-overlay">
     <div class="modal modal-large">
-      <!--<%= button_tag "&times;".html_safe, type: "button", class: "modal-close" %>-->
       <h3>Configure Order</h3>
       <%= form_with model: order,
             url: order_path(order),
@@ -55,7 +53,7 @@
                   <td><span class="item-total"><%= sprintf("%.2f", item.total_cost) %></span></td>
                   <td>
                     <% if item.persisted? %>
-                      </form> <!-- Close parent form temporarily -->
+                      </form>
                       <turbo-frame id="delete-item-<%= item.id %>">
                         <%= button_to "Remove",
                               item_path(item),
@@ -63,7 +61,7 @@
                               form: { data: { turbo_frame: "modal-order" } },
                               class: "modal-btn" %>
                       </turbo-frame>
-                      <form> <!-- Reopen parent form -->
+                      <form>
                     <% end %>
                   </td>
                 </tr>
@@ -85,7 +83,7 @@
           </table>
         </div>
         
-      <% end %>  <!-- This closes the form_with -->
+      <% end %>
       
       <div class="modal-actions">
         <%= button_to "Delete Order",

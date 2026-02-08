@@ -1,11 +1,15 @@
 # Read about fixtures at https://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
 
-one:
-  username: MyString
-  password: MyString
-  is_admin: false
+admin_user:
+  username: "ADMIN"
+  encrypted_password: <%= Devise::Encryptor.digest(User, 'Beans') %>
+  is_admin: true
+  admin: admin_one
+  distributor: 
 
-two:
-  username: MyString
-  password: MyString
+dist_user:
+  username: "DIST"
+  encrypted_password: <%= Devise::Encryptor.digest(User, 'Beans') %>
   is_admin: false
+  admin: 
+  distributor: botswana

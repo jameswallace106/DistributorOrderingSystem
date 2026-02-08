@@ -31,12 +31,10 @@ end
 
   def update
     update_params = user_update_params
-
     if update_params[:password].blank?
       update_params.delete(:password)
       update_params.delete(:password_confirmation)
     end
-
     success =
       if update_params[:password].present?
         @user.update(update_params)

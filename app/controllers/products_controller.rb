@@ -15,11 +15,9 @@ class ProductsController < ApplicationController
     if @product.save
       redirect_to products_path, notice: "Product added"
     else
-      flash.now[:alert] = "Failed to add product"
-      render :new, status: :unprocessable_entity
+      redirect_to products_path, alert: "Name cannot be blank."
     end
   end
-
 
   def configure
     render partial: "modal", locals: { product: @product }

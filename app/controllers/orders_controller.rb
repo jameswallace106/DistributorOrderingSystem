@@ -1,14 +1,12 @@
 class OrdersController < ApplicationController
   before_action :authenticate_user!
-  before_action :set_order, only: [:configure, :update, :destroy]
-  before_action :load_skus, only: [:new, :configure]
+  before_action :set_order, only: [ :configure, :update, :destroy ]
+  before_action :load_skus, only: [ :new, :configure ]
 
   def index
     @orders = if current_user.is_admin?
-      # Admins see only submitted orders
       Order.includes(:distributor).where(status: "submitted").order(created_at: :desc)
     else
-      # Distributors see all orders for their distributor
       Order.includes(:distributor)
            .where(distributor_id: current_user.distributor_id)
            .order(created_at: :desc)
@@ -80,8 +78,7 @@ class OrdersController < ApplicationController
   end
 
   def load_skus
-    @skus = StockKeepingUnit.includes(:product)
-                        .where(distributor_id: current_user.distributor_id)
+    @skus = StockKeepingUnit.includes(:product).where(distributor_id: current_user.distributor_id)
   end
 
   def can_edit_order?
@@ -91,10 +88,6 @@ class OrdersController < ApplicationController
   end
 
   def order_params
-    params.require(:order).permit(
-      :required_delivery_date,
-      :status,
-      items_attributes: [:id, :quantity]
-    )
+    params.require(:order).permit(:required_delivery_date, :status, items_attributes: [ :id, :quantity ])
   end
 end

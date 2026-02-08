@@ -636,6 +636,6 @@ body {
 }
 
 .date-input {
-  width: 200px; /* Limits the horizontal width */
+  width: 200px;
   flex-shrink: 0;
 }

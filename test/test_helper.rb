@@ -13,3 +13,19 @@ module ActiveSupport
     # Add more helper methods to be used by all tests here...
   end
 end
+
+module ActionDispatch
+  class IntegrationTest
+    include Devise::Test::IntegrationHelpers
+
+    # Helper to sign in users
+    def sign_in_as(username, password = "Beans")
+      post user_session_path, params: {
+        user: {
+          username: username,
+          password: password
+        }
+      }
+    end
+  end
+end

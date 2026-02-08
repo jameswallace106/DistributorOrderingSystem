@@ -1,11 +1,11 @@
 # Read about fixtures at https://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+uganda:
+  name: "Uganda"
 
-one:
-  username: MyString
-  password: MyString
-  is_admin: false
+china:
+  name: "China"
 
-two:
-  username: MyString
-  password: MyString
-  is_admin: false
+peru:
+  name: "Peru"
+botswana:
+  name: "Botswana"

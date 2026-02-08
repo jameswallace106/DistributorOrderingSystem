@@ -8,6 +8,7 @@ class User < ApplicationRecord
   belongs_to :admin, optional: true
 
   before_validation :normalize_role_associations
+  
   # Done instead of using validatable because validatable requires email
   validates :username, presence: true, uniqueness: { case_sensitive: true }
   validates :password, presence: true, length: { minimum: 1 }, on: :create

@@ -1,7 +1,31 @@
 # Read about fixtures at https://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
 
-one:
-  price: 1
+sku_one:
+  price: 2.21
+  distributor: botswana
+  product: apple
 
-two:
-  price: 1
+sku_two:
+  price: 12.11
+  distributor: china
+  product: banana
+
+sku_three:
+  price: 3.69
+  distributor: peru
+  product: kiwi
+
+sku_four:
+  price: 1.08
+  distributor: botswana
+  product: orange
+
+sku_five:
+  price: 0.99
+  distributor: botswana
+  product: banana
+
+sku_six:
+  price: 15.12
+  distributor: china
+  product: kiwi

@@ -4,8 +4,12 @@
 # model remove the "{}" from the fixture names and add the columns immediately
 # below each fixture, per the syntax in the comments below
 #
-one: {}
-# column: value
-#
-two: {}
-# column: value
+submitted_order:
+  distributor: botswana
+  required_delivery_date: 2026-02-26
+  status: "submitted"
+
+in_progress_order:
+  distributor: botswana
+  required_delivery_date: 2026-02-08
+  status: "in-progress"

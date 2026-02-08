@@ -23,11 +23,9 @@ class StockKeepingUnitsController < ApplicationController
     if @sku.save
       redirect_to stock_keeping_units_path, notice: "SKU added"
     else
-      flash.now[:alert] = "Failed to add SKU"
-      render :index, status: :unprocessable_entity
+      redirect_to stock_keeping_units_path, alert: "Name cannot be blank."
     end
   end
-
 
   def configure
     @distributors = Distributor.all.order(:name)

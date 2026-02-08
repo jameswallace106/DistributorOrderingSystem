@@ -1,36 +1,92 @@
 # README
 
-This README would normally document whatever steps are necessary to get the
-application up and running.
+This file contains information necessary to get the application running on a localhost environment, as well as some information on the features implemented.
 
-Things you may want to cover:
+Ruby version: 3.3.6
+Rails version: 8.0.4
+Sqlite3 version: 3.45.3
+Node version: v22.19.0
 
-* Ruby version
+# Setup Instructions
+### Step 1: Installation
+Make sure you have the above tools installed. You can verify this by the following command in an ubuntu window
+```bash
+ruby -v
+rails -v
+sqlite3 --version
+node -v
+```
+If you have any issues here, please refer to "Windows Rails Setup Guide.pdf"
 
-* System dependencies
+### Step 2: Run
 
-* Configuration
+1. Install dependencies:
+```bash
+   bundle install
+```
 
-* Database creation
+2. Setup database:
+```bash
+   rails db:setup
+```
 
-* Database initialization
+3. Start the server:
+```bash
+   rails server
+```
+Access at : 'http://[::1]:3000/'
 
-* How to run the test suite
-
-* Services (job queues, cache servers, search engines, etc.)
-
-* Deployment instructions
-
-* ...
-
-
-Test Account Passwords
+### Passwords
+Account Username and Passwords (Admin users may create more)
+Username: Password
 
 ADMIN : "Beans"
+DIST : "Beans"
+
+
+# Application Overview
+
+This app uses a simple MVC structure
+
+Models - The app's objects
+Views - The webpage structure and logic
+Controller - Backend logic/db interaction
+
+Database - The connected db is a sqlite3 file, stored locally. Can be interacted with through rails console.
+Rails migrations used for schema changes
+
 
 Have decided that admins page is unnecessary, becuase admins can just create new users. Also every admin will know every other admin, so configuring who is and isn't admin it outside of the scope of this app. 
-I was going to have email be a field of admin, but again, there will be so few admins that a name is a good enough identifier.
 Removing ability to remove due to foreign key error (it doesn't make sense because you want to store orders even after parting ways with a distributor. To remove access, you delete all of a distributors users.)
 Removed ability to delete SKUs and Products
 
-Idea: Logging (any changes are logged with the user that made them), make navbar into object
+### Addional features
+
+Along with all of the features in the project specification, the following help to comeplete the app.
+
+- Added ability to save an order for later as a distributor (similar to a cart feature)
+- Admin can view submitted orders and view items
+- Admin can create, configure, view, and delete users
+- Product names can be changed
+- Testing done on login and controllers
+
+### Notes
+
+Have decided that admins page is unnecessary, becuase admins can just create new users. Also every admin will know every other admin, so configuring who is and isn't admin it outside of the scope of this app. 
+Removing ability to remove due to foreign key error (it doesn't make sense because you want to store orders even after parting ways with a distributor. To remove access, you delete all of a distributors users.)
+Removed ability to delete SKUs and Products
+Before submission
+
+
+# 2. Test that the seed file works
+rails db:reset
+
+# 3. Verify everything loaded correctly
+rails console
+# Check: User.count, Order.count, etc.
+
+# 4. Clear the database for shipping
+rails db:drop
+
+# 5. Delete database files (if using SQLite)
+rm -f db/*.sqlite3

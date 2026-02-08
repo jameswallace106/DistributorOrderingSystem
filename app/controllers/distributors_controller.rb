@@ -15,11 +15,9 @@ class DistributorsController < ApplicationController
     if @distributor.save
       redirect_to distributors_path, notice: "Distributor added"
     else
-      flash.now[:alert] = "Failed to add distributor"
-      render :new, status: :unprocessable_entity
+      redirect_to distributors_path, alert: "Name cannot be blank."
     end
   end
-
 
   def destroy
     @distributor.destroy
@@ -29,7 +27,6 @@ class DistributorsController < ApplicationController
   def configure
     render partial: "modal", locals: { distributor: @distributor }
   end
-
 
   def update
     if @distributor.update(distributor_params)
