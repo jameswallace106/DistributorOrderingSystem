@@ -75,18 +75,3 @@ Along with all of the features in the project specification, the following help 
 Have decided that admins page is unnecessary, becuase admins can just create new users. Also every admin will know every other admin, so configuring who is and isn't admin it outside of the scope of this app. 
 Removing ability to remove due to foreign key error (it doesn't make sense because you want to store orders even after parting ways with a distributor. To remove access, you delete all of a distributors users.)
 Removed ability to delete SKUs and Products
-Before submission
-
-
-# 2. Test that the seed file works
-rails db:reset
-
-# 3. Verify everything loaded correctly
-rails console
-# Check: User.count, Order.count, etc.
-
-# 4. Clear the database for shipping
-rails db:drop
-
-# 5. Delete database files (if using SQLite)
-rm -f db/*.sqlite3
