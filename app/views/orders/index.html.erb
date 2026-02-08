@@ -20,9 +20,7 @@
           <th>Delivery Date</th>
           <th>Status</th>
           <th>Total</th>
-          <% unless current_user.is_admin? %>
-            <th></th>
-          <% end %>
+          <th></th>
         </tr>
       </thead>
       <tbody>
@@ -37,16 +35,21 @@
               </span>
             </td>
             <td><%= sprintf("%.2f", order.total_cost) %></td>
-            <% unless current_user.is_admin? %>
               <td class="actions">
-                <% if order.in_progress? %>
-                  <%= link_to "Configure",
-                        configure_order_path(order),
+                <% if current_user.is_admin? %>
+                  <%= link_to "View",
+                        view_order_path(order),
                         class: "btn-action",
                         data: { turbo_frame: "modal-order" } %>
+                <% else %>
+                  <% if order.in_progress? %>
+                    <%= link_to "Configure",
+                          configure_order_path(order),
+                          class: "btn-action",
+                          data: { turbo_frame: "modal-order" } %>
+                  <% end %>
                 <% end %>
               </td>
-            <% end %>
           </tr>
         <% end %>
         <% if @orders.empty? %>

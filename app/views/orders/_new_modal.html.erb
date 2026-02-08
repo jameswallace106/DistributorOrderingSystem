@@ -194,8 +194,6 @@
         updateItemTotalPrice();
         return;
         }
-        
-        // Get price from the SKU (you'll need to add data-price to options or make a small lookup)
         const option = select.options[select.selectedIndex];
         const price = parseFloat(option.dataset.price || 0);
         document.getElementById('item-price').textContent = price.toFixed(2);

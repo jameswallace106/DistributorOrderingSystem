@@ -48,6 +48,10 @@ class OrdersController < ApplicationController
     render partial: "new_modal", locals: { order: @order, skus: @skus }
   end
 
+  def view
+    @order = Order.find(params[:id])
+    render partial: "view_modal", locals: { order: @order, skus: @skus }
+  end
   def update
     return redirect_to orders_path, alert: "Access denied" unless can_edit_order?
 

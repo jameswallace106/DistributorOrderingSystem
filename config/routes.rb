@@ -43,6 +43,7 @@ Rails.application.routes.draw do
   resources :orders, only: [:index, :new, :create, :update, :destroy] do
     member do
       get :configure
+      get :view
     end
     resources :items, only: [:new, :create, :destroy]
   end

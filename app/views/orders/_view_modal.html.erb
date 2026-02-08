@@ -1,0 +1,46 @@
+<!-- app/views/orders/_view_modal.html.erb -->
+<turbo-frame id="modal-order">
+  <div class="modal-overlay">
+    <div class="modal modal-large">
+      <button type="button" class="modal-close">&times;</button>
+      <h3>Order #<%= order.id %> - <%= order.status.titleize %></h3>
+      
+      <div class="items-section">
+        <h4>Order Items</h4>
+        
+        <table class="items-table">
+          <thead>
+            <tr>
+              <th>Product</th>
+              <th>Price per Unit</th>
+              <th># of Pallets (4800 units)</th>
+              <th>Total</th>
+            </tr>
+          </thead>
+          <tbody>
+            <% order.items.each do |item| %>
+              <tr>
+                <td><%= item.stock_keeping_unit&.product&.name %></td>
+                <td><%= sprintf("%.2f", item.stock_keeping_unit&.price || 0) %></td>
+                <td><%= item.quantity %></td>
+                <td><%= sprintf("%.2f", item.total_cost) %></td>
+              </tr>
+            <% end %>
+            <% if order.items.empty? %>
+              <tr class="empty-row">
+                <td colspan="4">No items in this order</td>
+              </tr>
+            <% end %>
+          </tbody>
+          <tfoot>
+            <tr class="total-row">
+              <td colspan="3"><strong>Total Cost:</strong></td>
+              <td><strong><%= sprintf("%.2f", order.total_cost) %></strong></td>
+            </tr>
+          </tfoot>
+        </table>
+      </div>
+    
+    </div>
+  </div>
+</turbo-frame>
